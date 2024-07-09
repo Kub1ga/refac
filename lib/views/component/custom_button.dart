@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-Widget customButton(Color color, String text) {
+Widget customButton(Color color, Widget widget) {
   return Container(
     height: 60.h,
     decoration: BoxDecoration(
@@ -11,14 +11,7 @@ Widget customButton(Color color, String text) {
       ),
     ),
     child: Center(
-      child: Text(
-        text,
-        style: TextStyle(
-          fontSize: 16.sp,
-          fontWeight: FontWeight.w700,
-          color: Colors.white
-        ),
-      ),
+      child: widget
     ),
   );
 }

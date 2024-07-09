@@ -1,12 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:refac/state/auth/auth_provider.dart';
-import 'package:refac/views/component/constant/loading_dialog.dart';
-import 'package:refac/views/home/home_page_as_admin.dart';
-import 'package:refac/views/home/home_page_as_user.dart';
 import 'package:refac/views/auth/register_page.dart';
 import 'package:refac/views/component/custom_button.dart';
 import 'package:refac/views/component/custom_text_form.dart';
@@ -18,6 +13,7 @@ class LoginPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authProv = ref.watch(authProvider);
+
     return Scaffold(
       backgroundColor: Colors.blue,
       body: Container(
@@ -73,8 +69,10 @@ class LoginPage extends ConsumerWidget {
                           Row(
                             children: [
                               Checkbox(
-                                value: false,
-                                onChanged: (value) {},
+                                value: authProv.isRememberMeActive,
+                                onChanged: (value) {
+                                  authProv.rememberMeChange(value);
+                                },
                               ),
                               Text(
                                 'Ingat saya',
@@ -96,85 +94,37 @@ class LoginPage extends ConsumerWidget {
                             height: 24.h,
                           ),
                           GestureDetector(
-                              onTap: () async {
-                                if (authProv.emailController.text == 'admin' &&
-                                    authProv.passwordController.text ==
-                                        'admin') {
-                                  print('as admin');
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) {
-                                      return HomePageAsAdmin();
-                                    },
-                                  ));
-                                } else {
-                                  final success = await authProv.loginAsUser(
-                                      authProv.emailController.text,
-                                      authProv.passwordController.text);
-                                  loadingDialog(context);
-                                  if (success) {
-                                    Navigator.pop(context);
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) {
-                                          return NavbarHome();
-                                        },
-                                      ),
-                                    );
-                                  } else {
-                                    Navigator.pop(context);
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(authProv.snackBarMessage);
-                                  }
-                                  // loadingDialog(context);
-                                  // try {
-                                  //   authProv.loginAsUser(
-                                  //       authProv.emailController.text,
-                                  //       authProv.passwordController.text);
-                                  //   print('as User');
-
-                                  //   Navigator.pop(context);
-
-                                  //   Navigator.of(context).push(
-                                  //     MaterialPageRoute(
-                                  //       builder: (context) {
-                                  //         return NavbarHome();
-                                  //       },
-                                  //     ),
-                                  //   );
-
-                                  //   Navigator.pop(context);
-                                  // } catch (e) {
-                                  //   ScaffoldMessenger.of(context)
-                                  //       .showSnackBar(authProv.snackBarMessage);
-                                  //   Navigator.pop(context);
-                                  // }
-                                  // if (success) {
-                                  //   print('as User');
-
-                                  //   Navigator.pop(context);
-                                  //   Navigator.of(context)
-                                  //       .push(MaterialPageRoute(
-                                  //     builder: (context) {
-                                  //       return NavbarHome();
-                                  //     },
-                                  //   ));
-                                  // } else {
-                                  //   Navigator.pop(context);
-                                  //   ScaffoldMessenger.of(context)
-                                  //       .showSnackBar(authProv.snackBarMessage);
-                                  // }
-                                  // authProv.loginAsUser(
-                                  //     authProv.emailController.text,
-                                  //     authProv.passwordController.text);
-                                  // print('as user');
-                                  // Navigator.of(context).push(MaterialPageRoute(
-                                  //   builder: (context) {
-                                  //     return NavbarHome();
-                                  //   },
-                                  // ));
-                                }
-                              },
-                              child: customButton(Colors.red, 'Login')),
+                            onTap: () async {
+                              authProv.loadingState(true);
+                              final success = await authProv.loginAsUser(
+                                  authProv.emailController.text,
+                                  authProv.passwordController.text);
+                              if (success == true) {
+                                print('as User');
+                                Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) {
+                                    return NavbarHome();
+                                  },
+                                ));
+                                authProv.loadingState(false);
+                              } else {
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(authProv.snackBarMessage);
+                                authProv.loadingState(false);
+                              }
+                            },
+                            child: customButton(
+                                Colors.red,
+                                authProv.isLoading == true
+                                    ? const CircularProgressIndicator()
+                                    : Text(
+                                        'Login',
+                                        style: TextStyle(
+                                            fontSize: 16.sp,
+                                            fontWeight: FontWeight.w700,
+                                            color: Colors.white),
+                                      )),
+                          ),
                           const Spacer(),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,

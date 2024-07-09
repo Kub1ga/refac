@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:refac/state/auth/auth_provider.dart';
 import 'package:refac/views/component/constant/app_theme.dart';
 import 'package:refac/views/component/custom_button.dart';
 import 'package:refac/views/component/custom_text_form.dart';
@@ -11,6 +12,7 @@ class RegisterPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final authProv = ref.watch(authProvider);
     return Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
@@ -31,14 +33,14 @@ class RegisterPage extends ConsumerWidget {
                         onTap: () {
                           Navigator.pop(context);
                         },
-                        child: Icon(
+                        child: const Icon(
                           Icons.arrow_back_ios_new_sharp,
                           size: 40,
                           color: Colors.white,
                         ),
                       ),
                       const Spacer(),
-                      Icon(
+                      const Icon(
                         Icons.list_rounded,
                         size: 40,
                         color: Colors.white,
@@ -65,27 +67,56 @@ class RegisterPage extends ConsumerWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(30, 30, 30, 30),
-                child: customTextForm('Email', TextEditingController()),
+                child: customTextForm('Email', authProv.emailController),
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(30, 0, 30, 30),
-                child: customTextForm('Nama Lengkap', TextEditingController()),
+                child: customTextForm('Nama Lengkap', authProv.nameController),
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(30, 0, 30, 30),
-                child: customTextForm('Nama Pengguna', TextEditingController()),
+                child: customTextForm(
+                    'Nama Pengguna', authProv.usernameController),
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(30, 0, 30, 30),
-                child: customTextForm('Kata Sandi', TextEditingController()),
+                child:
+                    customTextForm('Kata Sandi', authProv.passwordController),
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(30, 0, 30, 30),
-                child: customTextForm('Ulangi Kata Sandi', TextEditingController()),
+                child: customTextForm(
+                    'Ulangi Kata Sandi', authProv.passwordController),
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(30, 0, 30, 30),
-                child: customButton(Colors.red, 'Buat Akun'),
+                child: GestureDetector(
+                    onTap: () async {
+                      final success = await authProv.registerUser(
+                          authProv.usernameController.text,
+                          authProv.usernameController.text,
+                          authProv.emailController.text,
+                          authProv.passwordController.text);
+
+                      if (success) {
+                        Navigator.pop(context);
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(authProv.snackBarSuccessRegister);
+                      } else {
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(authProv.snackBarFailedRegister);
+                      }
+                    },
+                    child: customButton(
+                      Colors.red,
+                      Text(
+                        "Buat Akun",
+                        style: TextStyle(
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white),
+                      ),
+                    )),
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 15, bottom: 30),
