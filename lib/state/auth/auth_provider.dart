@@ -4,7 +4,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
+import 'package:refac/models/login_response.dart';
 import 'package:refac/services/user/api_services_user.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AuthProvider extends ChangeNotifier {
@@ -12,6 +14,7 @@ class AuthProvider extends ChangeNotifier {
   TextEditingController usernameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  String? token;
 
   bool? isLoading;
   void loadingState(bool? value) {
@@ -19,15 +22,14 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  String? tokenUser;
-
   bool isRememberMeActive = false;
 
   ApiServicesUser apiServices = ApiServicesUser();
 
   // String snackBarMessage = 'Data Users not found. Please use the registred Account!';
-  SnackBar snackBarMessage = const SnackBar(
-      content: Text('Data Users not found. Please use the registred Account!'));
+  SnackBar snackBarMessage(String message) {
+    return SnackBar(content: Text(message));
+  }
 
   SnackBar snackBarSuccessRegister = const SnackBar(
       content: Text('Account Registred Successfully. You can login Now!'));
@@ -35,7 +37,7 @@ class AuthProvider extends ChangeNotifier {
   SnackBar snackBarFailedRegister =
       const SnackBar(content: Text('Gagal membuat akun!'));
 
-  Future<bool> loginAsUser(String email, String password) async {
+  Future<LoginResponseModel> loginAsUser(String email, String password) async {
     final response = await http.post(
       Uri.parse(apiServices.baseUrl + apiServices.userLogin),
       headers: {
@@ -47,12 +49,14 @@ class AuthProvider extends ChangeNotifier {
         {'email': email, 'password': password},
       ),
     );
+    final loginModel = LoginResponseModel.fromJson(jsonDecode(response.body));
     if (response.statusCode == 200 || response.statusCode == 201) {
+      token = loginModel.token;
       print(response.body);
-      return true;
+      return LoginResponseModel.fromJson(jsonDecode(response.body));
     } else {
       print(response.statusCode);
-      return false;
+      throw Exception(jsonDecode(response.body)['message']);
     }
   }
 
@@ -86,6 +90,21 @@ class AuthProvider extends ChangeNotifier {
   void rememberMeChange(bool? value) {
     isRememberMeActive = value!;
     notifyListeners();
+  }
+
+  Future<void> saveToken(String token) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('token', token);
+  }
+
+  Future<String?> getToken(String token) async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('token');
+  }
+
+  Future deleteAll() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
   }
 }
 

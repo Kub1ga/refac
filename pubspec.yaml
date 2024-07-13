@@ -30,6 +30,9 @@ dependencies:
 
   cupertino_icons: ^1.0.6
   supabase_flutter: ^2.5.7
+  shared_preferences: ^2.2.3
+  url_launcher: ^6.3.0
+
 
 dev_dependencies:
   flutter_test:
