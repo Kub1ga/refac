@@ -39,6 +39,7 @@ class TukangServisDetail extends ConsumerWidget {
                     fontSize: 16.sp,
                   ),
                 ),
+                Text(data.data!.skill!),
                 SizedBox(
                   height: 15.h,
                 ),

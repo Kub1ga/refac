@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:refac/models/tukang_servis_detail.dart';
@@ -15,6 +16,8 @@ class AdminProvider extends ChangeNotifier {
   ApiServicesAdmin apiServicesAdmin = ApiServicesAdmin();
   TextEditingController namaTukangServisController = TextEditingController();
   TextEditingController phoneTukangServisController = TextEditingController();
+  TextEditingController skillTukangServisController = TextEditingController();
+  
   AuthProvider authProv = AuthProvider();
   SnackBar snackBarMessage(String message) {
     return SnackBar(content: Text(message));
@@ -27,7 +30,7 @@ class AdminProvider extends ChangeNotifier {
   }
 
   Future<AddTukangServisModel> postTukangServis(
-      String name, String phone) async {
+      String name, String phone, String skill) async {
     String? token = await authProv.getToken('token');
     final response = await http.post(
         Uri.parse(
@@ -35,6 +38,7 @@ class AdminProvider extends ChangeNotifier {
         body: jsonEncode({
           'name': name,
           'phone': phone,
+          'skill' : skill,
         }),
         headers: {
           'Content-type': 'application/json',

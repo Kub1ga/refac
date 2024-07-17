@@ -4,4 +4,5 @@ class ApiServicesUser {
   final String userLogin = 'api/v1/auth/login';
   final String userRegister = 'api/v1/auth/register';
   final String getUserDetail = 'api/v1/users';
+  final String getKategori = 'api/v1/category';
 }

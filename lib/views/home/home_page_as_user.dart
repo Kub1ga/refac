@@ -1,8 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:refac/state/home/home_provider.dart';
 import 'package:refac/views/component/search_bar.dart';
 
 class HomePageAsUser extends ConsumerWidget {
@@ -10,6 +9,7 @@ class HomePageAsUser extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final getCategory = ref.watch(getCategoryAsync);
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -142,30 +142,66 @@ class HomePageAsUser extends ConsumerWidget {
               SizedBox(
                 height: 10.h,
               ),
-              SizedBox(
-                height: 400.h,
-                child: GridView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    mainAxisSpacing: 0,
-                    crossAxisSpacing: 1,
-                    childAspectRatio: 0.85,
-                    crossAxisCount: 3,
-                  ),
-                  shrinkWrap: true,
-                  itemCount: 6,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-                      child: Container(
-                        decoration: BoxDecoration(
-                            color: Colors.amber,
-                            borderRadius: BorderRadius.circular(12.r)),
+              getCategory.when(
+                data: (data) {
+                  return SizedBox(
+                    height: 400.h,
+                    child: GridView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        mainAxisSpacing: 0,
+                        crossAxisSpacing: 1,
+                        childAspectRatio: 0.85,
+                        crossAxisCount: 3,
                       ),
-                    );
-                  },
-                ),
-              ),
+                      shrinkWrap: true,
+                      itemCount: data.data.length,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.amber,
+                              borderRadius: BorderRadius.circular(12.r),
+                            ),
+                            child: Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Image.network(
+                                    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTeujOaRWnmiTkG15-RkZrieVZ_JKumVf1CPQ&s',
+                                    width: 60.w,
+                                    height: 60.h,
+                                  ),
+                                  SizedBox(
+                                    height: 30.h,
+                                  ),
+                                  Text(
+                                    data.data[index].categoryName!
+                                        .toUpperCase()
+                                        .replaceAll('_', ' '),
+                                    style: TextStyle(
+                                      fontSize: 16.sp,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  );
+                },
+                error: (error, stackTrace) {
+                  return Text('error : $error');
+                },
+                loading: () {
+                  return const Center(child: CircularProgressIndicator());
+                },
+              )
             ],
           ),
         ),

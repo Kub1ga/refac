@@ -76,7 +76,9 @@ class HomePageAsAdmin extends ConsumerWidget {
                                         SizedBox(
                                           height: 8.h,
                                         ),
-                                        Text(data.data[index].phone!)
+                                        Text(data.data[index].phone!),
+                                        SizedBox(height: 8.h,),
+                                        Text(data.data[index].skill!)
                                       ],
                                     )
                                   ],

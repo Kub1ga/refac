@@ -1,5 +1,5 @@
-class ListTukangServis {
-    ListTukangServis({
+class CategoryModel {
+    CategoryModel({
         required this.message,
         required this.data,
     });
@@ -7,8 +7,8 @@ class ListTukangServis {
     final String? message;
     final List<Datum> data;
 
-    factory ListTukangServis.fromJson(Map<String, dynamic> json){ 
-        return ListTukangServis(
+    factory CategoryModel.fromJson(Map<String, dynamic> json){ 
+        return CategoryModel(
             message: json["message"],
             data: json["data"] == null ? [] : List<Datum>.from(json["data"]!.map((x) => Datum.fromJson(x))),
         );
@@ -19,25 +19,19 @@ class ListTukangServis {
 class Datum {
     Datum({
         required this.id,
-        required this.name,
-        required this.phone,
-        required this.photo,
-        required this.skill,
+        required this.categoryName,
+        required this.icon,
     });
 
     final int? id;
-    final String? name;
-    final String? phone;
-    final dynamic photo;
-    final String? skill;
+    final String? categoryName;
+    final String? icon;
 
     factory Datum.fromJson(Map<String, dynamic> json){ 
         return Datum(
             id: json["id"],
-            name: json["name"],
-            phone: json["phone"],
-            photo: json["photo"],
-            skill: json["skill"],
+            categoryName: json["category_name"],
+            icon: json["icon"],
         );
     }
 

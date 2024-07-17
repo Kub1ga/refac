@@ -20,7 +20,7 @@ class AddTukangServisPage extends ConsumerWidget {
         automaticallyImplyLeading: false,
         centerTitle: true,
         title: Text(
-          'Tambah tukang servis',
+          'Tambah teknisi',
           style: TextStyle(
             fontSize: 16.sp,
             fontWeight: FontWeight.w600,
@@ -38,6 +38,10 @@ class AddTukangServisPage extends ConsumerWidget {
             customTextForm(
                 'Nomor Telepon', adminProv.phoneTukangServisController),
             SizedBox(
+              height: 15.h,
+            ),customTextForm(
+                'Skill', adminProv.skillTukangServisController),
+            SizedBox(
               height: 50.h,
             ),
             GestureDetector(
@@ -45,8 +49,10 @@ class AddTukangServisPage extends ConsumerWidget {
                 adminProv.loadingState(true);
                 try {
                   await adminProv.postTukangServis(
-                      adminProv.namaTukangServisController.text,
-                      adminProv.phoneTukangServisController.text);
+                    adminProv.namaTukangServisController.text,
+                    adminProv.phoneTukangServisController.text,
+                    adminProv.skillTukangServisController.text,
+                  );
                   showDialog(
                     context: context,
                     builder: (context) {
@@ -109,7 +115,7 @@ class AddTukangServisPage extends ConsumerWidget {
                   adminProv.isLoading == true
                       ? const CircularProgressIndicator()
                       : Text(
-                          'Tambah tukang servis',
+                          'Tambah teknisi',
                           style: TextStyle(
                             fontSize: 14.sp,
                             color: Colors.white,

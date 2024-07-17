@@ -22,12 +22,14 @@ class Data {
         required this.name,
         required this.phone,
         required this.photo,
+        required this.skill,
     });
 
     final int? id;
     final String? name;
     final String? phone;
     final dynamic photo;
+    final String? skill;
 
     factory Data.fromJson(Map<String, dynamic> json){ 
         return Data(
@@ -35,6 +37,7 @@ class Data {
             name: json["name"],
             phone: json["phone"],
             photo: json["photo"],
+            skill: json["skill"],
         );
     }
 

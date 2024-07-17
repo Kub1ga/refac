@@ -4,13 +4,18 @@ import 'package:refac/views/home/admin/add_tukang_servis.dart';
 import 'package:refac/views/home/home_page_as_admin.dart';
 
 import '../../../state/home/home_provider.dart';
+import 'add_category_page.dart';
 
 class NavbarHomeAdmin extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currentIndex = ref.watch(currentIndexProvider);
 
-    final List<Widget> _children = [HomePageAsAdmin(), AddTukangServisPage()];
+    final List<Widget> _children = [
+      HomePageAsAdmin(),
+      AddTukangServisPage(),
+      AddCategoryPage()
+    ];
 
     return Scaffold(
       body: _children[currentIndex],
@@ -26,7 +31,11 @@ class NavbarHomeAdmin extends ConsumerWidget {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person_add),
-            label: 'Tambah Tukang Servis',
+            label: 'Tambah Teknisi',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.category),
+            label: 'Tambah kategori',
           ),
         ],
       ),
