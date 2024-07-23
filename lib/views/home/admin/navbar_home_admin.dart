@@ -34,8 +34,8 @@ class NavbarHomeAdmin extends ConsumerWidget {
             label: 'Tambah Teknisi',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.category),
-            label: 'Tambah kategori',
+            icon: Icon(Icons.design_services),
+            label: 'Layanan',
           ),
         ],
       ),

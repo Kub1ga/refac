@@ -25,9 +25,40 @@ class ProfileProvider extends ChangeNotifier {
       throw Exception(jsonDecode(response.body)['message']);
     }
   }
+
+  Future<DetailUserModel> updateProfile(
+    String name,
+    String userName,
+    String phone,
+    String address,
+  ) async {
+    String? token = await authProvider.getToken('token');
+    final response = await http.put(
+      Uri.parse(apiServicesUser.baseUrl + apiServicesUser.getUserDetail),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-type': 'application/json'
+      },
+      body: jsonEncode(
+        {
+          'name': name,
+          'username': userName,
+          'phone': phone,
+          'address': address,
+        },
+      ),
+    );
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      print(response.body);
+      return DetailUserModel.fromJson(jsonDecode(response.body));
+    } else {
+      print(response.body);
+      throw Exception(jsonDecode(response.body)['message']);
+    }
+  }
 }
 
-final profileProvider = Provider((ref) => ProfileProvider());
+final profileProvider = Provider.autoDispose((ref) => ProfileProvider());
 
 final getProfileUserAsync = FutureProvider.autoDispose((ref) {
   return ref.watch(profileProvider).getDetailUser();

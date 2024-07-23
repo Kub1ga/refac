@@ -35,8 +35,8 @@ class HomeProvider extends ChangeNotifier {
 
 final currentIndexProvider = StateProvider<int>((ref) => 0);
 
-final homeProvider = Provider((ref) => HomeProvider());
+final homeProvider = Provider.autoDispose((ref) => HomeProvider());
 
-final getCategoryAsync = FutureProvider((ref) {
+final getCategoryAsync = FutureProvider.autoDispose((ref) {
   return ref.watch(homeProvider).getAllCategory();
 });

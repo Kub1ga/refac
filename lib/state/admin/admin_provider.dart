@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:refac/models/all_order_models.dart';
 import 'package:refac/models/tukang_servis_detail.dart';
 import 'package:refac/services/admin/api_services_admin.dart';
 import 'package:http/http.dart' as http;
@@ -17,7 +18,11 @@ class AdminProvider extends ChangeNotifier {
   TextEditingController namaTukangServisController = TextEditingController();
   TextEditingController phoneTukangServisController = TextEditingController();
   TextEditingController skillTukangServisController = TextEditingController();
-  
+
+  TextEditingController categoryTitleController = TextEditingController();
+
+  List<MapEntry<String, dynamic>> layanan = [];
+
   AuthProvider authProv = AuthProvider();
   SnackBar snackBarMessage(String message) {
     return SnackBar(content: Text(message));
@@ -38,7 +43,7 @@ class AdminProvider extends ChangeNotifier {
         body: jsonEncode({
           'name': name,
           'phone': phone,
-          'skill' : skill,
+          'skill': skill,
         }),
         headers: {
           'Content-type': 'application/json',
@@ -82,10 +87,24 @@ class AdminProvider extends ChangeNotifier {
     }
   }
 
+  Future<bool> postCategory(String nameCategory) async {
+    String? token = await authProv.getToken('token');
+    final response = await http.post(
+        Uri.parse(apiServicesAdmin.baseUrl + apiServicesAdmin.createCategory),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-type': 'application/json'
+        },
+        body: jsonEncode({'category_name': nameCategory}));
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return true;
+    } else {
+      throw Exception(jsonDecode(response.body)['message']);
+    }
+  }
+
   void launchWhatsApp(String phone) async {
     final Uri whatsappUrl = Uri.parse('https://wa.me/+62$phone');
-
-    // For debugging
     print('Launching WhatsApp URL: $whatsappUrl');
 
     bool canLaunchWhatsApp = await canLaunchUrl(whatsappUrl);
@@ -94,11 +113,20 @@ class AdminProvider extends ChangeNotifier {
     if (canLaunchWhatsApp) {
       await launchUrl(whatsappUrl, mode: LaunchMode.externalApplication);
     } else {
-      // For debugging
       print('Could not launch WhatsApp URL: $whatsappUrl');
-
-      // Alternative method
       await launch(whatsappUrl.toString());
+    }
+  }
+
+  Future<AllOrderModels> getAllOrder() async {
+    final response = await http.get(
+      Uri.parse(apiServicesAdmin.baseUrl + apiServicesAdmin.getAllOrder),
+      headers: {'Content-type': 'application/json'},
+    );
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return AllOrderModels.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception(jsonDecode(response.body)['messages']);
     }
   }
 }
@@ -112,4 +140,8 @@ final getAllTukangServiceAsync = FutureProvider.autoDispose((ref) {
 final getTukangServiceDetailAsync =
     FutureProvider.autoDispose.family<TukangServisDetail, int>((ref, id) {
   return ref.watch(adminProvider).getTukangServisDetail(id);
+});
+
+final getAllOrderAsync = FutureProvider.autoDispose((ref) {
+  return ref.watch(adminProvider).getAllOrder();
 });

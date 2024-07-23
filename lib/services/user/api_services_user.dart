@@ -5,4 +5,12 @@ class ApiServicesUser {
   final String userRegister = 'api/v1/auth/register';
   final String getUserDetail = 'api/v1/users';
   final String getKategori = 'api/v1/category';
+  final String getAllService = 'api/v1/category-service';
+  final String userOrder = 'api/v1/orders';
+  
+  String getDetailServiceById(int idCategory){
+    return 'api/v1/category-service/$idCategory';
+  }
+
+  
 }

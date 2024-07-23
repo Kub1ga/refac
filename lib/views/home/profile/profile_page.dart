@@ -8,6 +8,7 @@ import 'package:refac/state/home/home_provider.dart';
 import 'package:refac/state/profile/profile_provider.dart';
 import 'package:refac/views/auth/login_page.dart';
 import 'package:refac/views/component/constant/app_theme.dart';
+import 'package:refac/views/home/profile/edit_profile.dart';
 
 class ProfilePage extends ConsumerWidget {
   const ProfilePage({super.key});
@@ -91,6 +92,17 @@ class ProfilePage extends ConsumerWidget {
                           child: GestureDetector(
                             onTap: () async {
                               print('${await authProv.getToken('token')}');
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) {
+                                  return EditProfilePage(
+                                    namaUser: data.name!,
+                                    email: data.email!,
+                                    dateCreated: data.createdAt!.toIso8601String(),
+                                    address: data.address,
+                                    phone: data.phone,
+                                  );
+                                },
+                              ));
                             },
                             child: Container(
                               height: 60.h,
@@ -137,7 +149,9 @@ class ProfilePage extends ConsumerWidget {
                           ),
                         ),
                         Text(
-                          '       ${data.name}',
+                          data.phone == null
+                              ? '       Belum ada nomor'
+                              : '       ${data.phone}',
                           style: TextStyle(
                             fontSize: 18.sp,
                           ),
@@ -152,7 +166,9 @@ class ProfilePage extends ConsumerWidget {
                           ),
                         ),
                         Text(
-                          '       Lorem ipsum dolor si amet asususu asdahwduhawudh',
+                          data.address == null
+                              ? '       Belum ada alamat'
+                              : '       ${data.address}',
                           style: TextStyle(
                             fontSize: 18.sp,
                           ),
