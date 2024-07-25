@@ -1,5 +1,5 @@
-class ListServiceModel {
-    ListServiceModel({
+class ServiceCategory {
+    ServiceCategory({
         required this.message,
         required this.data,
     });
@@ -7,8 +7,8 @@ class ListServiceModel {
     final String? message;
     final List<Datum> data;
 
-    factory ListServiceModel.fromJson(Map<String, dynamic> json){ 
-        return ListServiceModel(
+    factory ServiceCategory.fromJson(Map<String, dynamic> json){ 
+        return ServiceCategory(
             message: json["message"],
             data: json["data"] == null ? [] : List<Datum>.from(json["data"]!.map((x) => Datum.fromJson(x))),
         );

@@ -9,14 +9,14 @@ import 'package:refac/views/component/constant/app_theme.dart';
 import 'package:refac/views/component/custom_button.dart';
 
 class OrderPage extends ConsumerWidget {
-  int idCategory;
+  int idCategoryService;
   int idUser;
-  OrderPage({super.key, required this.idCategory, required this.idUser});
+  OrderPage({super.key, required this.idCategoryService, required this.idUser});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final getServiceDetail = ref.watch(getCategoryDetailAsync(idCategory));
-    print('id_category : $idCategory');
+    final getServiceDetail = ref.watch(getDetailServiceAsync(idCategoryService));
+    print('id_category_service : $idCategoryService');
     print('id_user : $idUser');
     return Scaffold(
       appBar: AppBar(
@@ -45,7 +45,7 @@ class OrderPage extends ConsumerWidget {
                         borderRadius: BorderRadius.circular(12.r)),
                     child: Padding(
                       padding: const EdgeInsets.all(20),
-                      child: Text(data.data!.nameService!),
+                      child: Text(data.data[0].nameService!),
                     ),
                   ),
                 ),
@@ -69,7 +69,7 @@ class OrderPage extends ConsumerWidget {
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Text('Rp. ${data.data!.price!.toString()}'),
+                    child: Text('Rp. ${data.data[0].price!.toString()}'),
                   ),
                 ),
                 SizedBox(
@@ -105,15 +105,18 @@ class OrderPage extends ConsumerWidget {
                 const Spacer(),
                 GestureDetector(
                   onTap: () async {
+                    print('id cat = $idCategoryService, id use = $idUser');
+                    print(await ref.watch(authProvider).getToken('token'));
                     ref.watch(authProvider).loadingState(true);
                     try {
                       await ref
                           .watch(orderProvider)
-                          .createOder(idCategory, idUser);
+                          .createOder(idCategoryService, idUser);
                       ref.watch(authProvider).loadingState(false);
                       ScaffoldMessenger.of(context).showSnackBar(ref
                           .watch(authProvider)
-                          .snackBarMessage('Berhasil, harap tunggu teknisi datang'));
+                          .snackBarMessage(
+                              'Berhasil, harap tunggu teknisi datang'));
                       Navigator.pop(context);
                     } catch (e) {
                       ref.watch(authProvider).loadingState(false);

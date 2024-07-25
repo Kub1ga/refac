@@ -5,19 +5,24 @@ class CategoryDetailModel {
     });
 
     final String? message;
-    final Data? data;
+    final List<Datum> data;
 
     factory CategoryDetailModel.fromJson(Map<String, dynamic> json){ 
         return CategoryDetailModel(
             message: json["message"],
-            data: json["data"] == null ? null : Data.fromJson(json["data"]),
+            data: json["data"] == null ? [] : List<Datum>.from(json["data"]!.map((x) => Datum.fromJson(x))),
         );
     }
 
+    Map<String, dynamic> toJson() => {
+        "message": message,
+        "data": data.map((x) => x?.toJson()).toList(),
+    };
+
 }
 
-class Data {
-    Data({
+class Datum {
+    Datum({
         required this.id,
         required this.idCategory,
         required this.nameService,
@@ -29,13 +34,20 @@ class Data {
     final String? nameService;
     final num? price;
 
-    factory Data.fromJson(Map<String, dynamic> json){ 
-        return Data(
+    factory Datum.fromJson(Map<String, dynamic> json){ 
+        return Datum(
             id: json["id"],
             idCategory: json["id_category"],
             nameService: json["name_service"],
             price: json["price"],
         );
     }
+
+    Map<String, dynamic> toJson() => {
+        "id": id,
+        "id_category": idCategory,
+        "name_service": nameService,
+        "price": price,
+    };
 
 }

@@ -97,11 +97,24 @@ class HomePageAsUser extends ConsumerWidget {
                             children: [
                               GestureDetector(
                                 onTap: () {
-                                  print(data.data[index].id);
+                                  print('id service = ${data.data[index].id}');
+                                  print(
+                                      'id category = ${data.data[index].idCategory}');
+                                  print('id user = ${getIdUser.when(
+                                    data: (data) {
+                                      return data.id!;
+                                    },
+                                    error: (error, stackTrace) {
+                                      return 0;
+                                    },
+                                    loading: () {
+                                      return 0;
+                                    },
+                                  )}');
                                   Navigator.of(context).push(MaterialPageRoute(
                                     builder: (context) {
                                       return OrderPage(
-                                        idCategory: data.data[index].id!,
+                                        idCategoryService: data.data[index].id!,
                                         idUser: getIdUser.when(
                                           data: (data) {
                                             return data.id!;
@@ -200,9 +213,11 @@ class HomePageAsUser extends ConsumerWidget {
                           padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
                           child: GestureDetector(
                             onTap: () {
+                              print('id category = ${data.data[index].id!}');
                               Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) {
                                   return CategoryServicePage(
+                                    title: data.data[index].categoryName!,
                                     idCategory: data.data[index].id!,
                                   );
                                 },

@@ -7,10 +7,12 @@ class ApiServicesUser {
   final String getKategori = 'api/v1/category';
   final String getAllService = 'api/v1/category-service';
   final String userOrder = 'api/v1/orders';
-  
-  String getDetailServiceById(int idCategory){
-    return 'api/v1/category-service/$idCategory';
+
+  String getDetailServiceById(int idCategoryService) {
+    return 'api/v1/category-service/$idCategoryService';
   }
 
-  
+  String getDetailCategory(int idCategory) {
+    return 'api/v1/category-service/where/$idCategory';
+  }
 }

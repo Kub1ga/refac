@@ -13,7 +13,7 @@ class OrderProvider extends ChangeNotifier {
   AuthProvider authProvider = AuthProvider();
   TextEditingController deskripsiController = TextEditingController();
 
-  Future<void> createOder(int idCategory, int idUser) async {
+  Future<void> createOder(int idService, int idUser) async {
     String? token = await authProvider.getToken('token');
     final response = await http.post(
       Uri.parse(apiServicesUser.baseUrl + apiServicesUser.userOrder),
@@ -22,7 +22,7 @@ class OrderProvider extends ChangeNotifier {
         'Content-type': 'application/json'
       },
       body: jsonEncode({
-        'id_category_service': idCategory,
+        'id_category_service': idService,
         'id_users': idUser,
         'description' : deskripsiController.text
       }),
@@ -31,6 +31,7 @@ class OrderProvider extends ChangeNotifier {
       print(response.body);
     } else {
       print(response.body);
+      print(apiServicesUser.baseUrl + apiServicesUser.userOrder);
       throw Exception(jsonDecode(response.body)['message']);
     }
   }

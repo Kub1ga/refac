@@ -11,22 +11,33 @@ import '../../../models/list_service.dart';
 class CategoryProvider extends ChangeNotifier {
   ApiServicesUser apiServicesUser = ApiServicesUser();
 
-  Future<CategoryDetailModel> getCategoryDetail(int id) async {
+  Future<CategoryDetailModel> getCategoryDetail(int idCategory) async {
     final response = await http.get(
       Uri.parse(
-        apiServicesUser.baseUrl + apiServicesUser.getDetailServiceById(id),
+        apiServicesUser.baseUrl + apiServicesUser.getDetailCategory(idCategory),
       ),
-      headers: {'Content-type': 'application/json'},
     );
     if (response.statusCode == 200 || response.statusCode == 201) {
       print(response.body);
       return CategoryDetailModel.fromJson(jsonDecode(response.body));
     } else {
       print(response.body);
-      print(
-        apiServicesUser.baseUrl + apiServicesUser.getDetailServiceById(18),
-      );
+
       throw Exception(jsonDecode(response.body));
+    }
+  }
+
+  Future<CategoryDetailModel> getDetailService(int idService) async {
+    final response = await http.get(
+      Uri.parse(
+        apiServicesUser.baseUrl +
+            apiServicesUser.getDetailServiceById(idService),
+      ),
+    );
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return CategoryDetailModel.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception(jsonDecode(response.body)['message']);
     }
   }
 
@@ -54,4 +65,9 @@ final getCategoryDetailAsync =
 
 final getAllServiceAsync = FutureProvider.autoDispose((ref) {
   return ref.watch(categoryProvider).getAllService();
+});
+
+final getDetailServiceAsync = FutureProvider.autoDispose
+    .family<CategoryDetailModel, int>((ref, idService) {
+  return ref.watch(categoryProvider).getDetailService(idService);
 });
