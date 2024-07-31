@@ -5,8 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:refac/state/admin/admin_provider.dart';
 import 'package:refac/state/auth/auth_provider.dart';
-import 'package:refac/views/home/admin/add_layanan_per_category.dart';
+import 'package:refac/views/home/admin/add_services_as_category.dart';
 
+import '../../../state/home/home_provider.dart';
 import '../../component/constant/app_theme.dart';
 import '../../component/custom_button.dart';
 import '../../component/custom_text_form.dart';
@@ -17,6 +18,7 @@ class AddCategoryPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final adminProv = ref.watch(adminProvider);
+    final getCategory = ref.watch(getCategoryAsync);
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -25,32 +27,56 @@ class AddCategoryPage extends ConsumerWidget {
         padding: const EdgeInsets.all(15),
         child: Column(
           children: [
-            customTextForm('Judul Kategori', adminProv.categoryTitleController),
+            getCategory.when(
+              data: (data) {
+                return ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: data.data.length,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 10),
+                      child: GestureDetector(
+                        onTap: () {
+                          print(data.data[index].id!);
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) {
+                              return AddServicesCategory(
+                                name: data.data[index].categoryName!,
+                                idCat: data.data[index].id.toString(),
+                              );
+                            },
+                          ));
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                              border:
+                                  Border.all(color: RefacTheme().mainColor)),
+                          child: Center(
+                            child: Text(data.data[index].categoryName!),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },
+              error: (error, stackTrace) {
+                return Center(
+                  child: Text('error : $error'),
+                );
+              },
+              loading: () {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              },
+            ),
             SizedBox(
               height: 15.h,
             ),
-            GestureDetector(
-              onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) {
-                    return AddLayananPerCategory(
-                      categoryTitle: adminProv.categoryTitleController.text,
-                    );
-                  },
-                ));
-              },
-              child: AbsorbPointer(
-                child: TextFormField(
-                  decoration: InputDecoration(
-                    hintText: 'Masukkan layanan',
-                    suffixIcon: Icon(
-                      Icons.arrow_forward_ios,
-                      color: Colors.black,
-                      size: 20.sp,
-                    ),
-                  ),
-                ),
-              ),
+            customTextForm('Judul Kategori', adminProv.categoryTitleController),
+            SizedBox(
+              height: 15.h,
             ),
             SizedBox(
               height: 15.h,
@@ -58,11 +84,13 @@ class AddCategoryPage extends ConsumerWidget {
             GestureDetector(
               onTap: () async {
                 adminProv.postCategory(adminProv.categoryTitleController.text);
+
+                ref.refresh(getCategoryAsync.future);
               },
               child: customButton(
                   RefacTheme().mainColor,
                   Text(
-                    'Tambah Layanan',
+                    'Tambah Kategori',
                     style: TextStyle(
                       fontSize: 14.sp,
                       color: Colors.white,

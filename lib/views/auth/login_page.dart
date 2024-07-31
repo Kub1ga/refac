@@ -64,8 +64,39 @@ class LoginPage extends ConsumerWidget {
                             SizedBox(
                               height: 16.h,
                             ),
-                            customIconForm(Icon(Icons.lock), 'Kata Sandi',
-                                authProv.passwordController),
+                            Container(
+                              height: 60.h,
+                              decoration: BoxDecoration(
+                                  color: Colors.grey[200],
+                                  borderRadius: BorderRadius.circular(100.r)),
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 8),
+                                child: Center(
+                                  child: TextFormField(
+                                    obscureText: authProv.isVisible,
+                                    controller: authProv.passwordController,
+                                    decoration: InputDecoration(
+                                      hintText: 'Kata sandi',
+                                      prefixIcon: Icon(Icons.lock),
+                                      border: InputBorder.none,
+                                      suffixIcon: GestureDetector(
+                                          onTap: () {
+                                            if (authProv.isVisible == false) {
+                                              authProv.changeVisibilityPassword(
+                                                  true);
+                                            } else {
+                                              authProv.changeVisibilityPassword(
+                                                  false);
+                                            }
+                                          },
+                                          child: authProv.isVisible
+                                              ? Icon(Icons.visibility)
+                                              : Icon(Icons.visibility_off)),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
                             SizedBox(
                               height: 16.h,
                             ),
@@ -113,11 +144,18 @@ class LoginPage extends ConsumerWidget {
                                     await authProv.loginAsUser(
                                         authProv.emailController.text,
                                         authProv.passwordController.text);
-                                    Navigator.of(context).push(MaterialPageRoute(
+                                    if (authProv.isRememberMeActive == true) {
+                                      authProv.saveToken('token');
+                                      print(
+                                          'aktif ga ni = ${authProv.isRememberMeActive}');
+                                    }
+                                    Navigator.of(context)
+                                        .push(MaterialPageRoute(
                                       builder: (context) {
                                         return NavbarHome();
                                       },
                                     ));
+
                                     print('as User');
                                     authProv.loadingState(false);
                                     authProv.saveToken(authProv.token!);

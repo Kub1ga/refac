@@ -7,7 +7,7 @@ class ApiServicesUser {
   final String getKategori = 'api/v1/category';
   final String getAllService = 'api/v1/category-service';
   final String userOrder = 'api/v1/orders';
-
+  final String createService = 'api/v1/category-service';
   String getDetailServiceById(int idCategoryService) {
     return 'api/v1/category-service/$idCategoryService';
   }

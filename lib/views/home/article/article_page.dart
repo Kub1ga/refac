@@ -10,7 +10,7 @@ class ArticlePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final articleProv = ref.watch(articleProvider);
+    final articleProvAsync = ref.watch(getAllArticle);
     return Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
@@ -23,44 +23,59 @@ class ArticlePage extends ConsumerWidget {
             ),
           ),
         ),
-        body: ListView.builder(
-          itemCount: articleProv.article.length,
-          itemBuilder: (context, index) {
-            final article = articleProv.article[index];
-            return GestureDetector(
-              onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) {
-                    return DetailArticlePage(
-                      content: article.content,
-                      title: article.title,
-                      image: article.image,
-                    );
+        body: articleProvAsync.when(
+          data: (data) {
+            return ListView.builder(
+              itemCount: data.data.length,
+              itemBuilder: (context, index) {
+                final article = data.data[index];
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) {
+                        return DetailArticlePage(
+                          content: article.content,
+                          title: article.title,
+                          image: article.picture,
+                        );
+                      },
+                    ));
                   },
-                ));
-              },
-              child: Padding(
-                padding: const EdgeInsets.only(left: 15, right: 15, bottom: 10),
-                child: Container(
-                  width: 1.sw,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12.r),
-                    border: Border.all(
-                      color: RefacTheme().mainColor,
-                    ),
-                  ),
                   child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      article.title!,
-                      style: TextStyle(
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w500,
+                    padding:
+                        const EdgeInsets.only(left: 15, right: 15, bottom: 10),
+                    child: Container(
+                      width: 1.sw,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12.r),
+                        border: Border.all(
+                          color: RefacTheme().mainColor,
+                        ),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          article.title!,
+                          style: TextStyle(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ),
+                );
+              },
+            );
+          },
+          error: (error, stackTrace) {
+            return Center(
+              child: Text('Error : $error'),
+            );
+          },
+          loading: () {
+            return Center(
+              child: CircularProgressIndicator(),
             );
           },
         ));

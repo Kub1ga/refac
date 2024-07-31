@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:refac/state/admin/admin_provider.dart';
 import 'package:refac/views/component/constant/app_theme.dart';
 import 'package:refac/views/home/admin/add_tukang_servis.dart';
+import 'package:refac/views/home/admin/artikel/list_artikel.dart';
 import 'package:refac/views/home/admin/order/list_order.dart';
 import 'package:refac/views/home/admin/tukang_servis_detail_page.dart';
 
@@ -16,7 +17,6 @@ class HomePageAsAdmin extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -44,9 +44,11 @@ class HomePageAsAdmin extends ConsumerWidget {
             children: [
               GestureDetector(
                 onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                    return const ListTeknisi();
-                  },));
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) {
+                      return const ListTeknisi();
+                    },
+                  ));
                 },
                 child: Container(
                   decoration: BoxDecoration(
@@ -72,9 +74,11 @@ class HomePageAsAdmin extends ConsumerWidget {
               ),
               GestureDetector(
                 onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                    return const ListOrder();
-                  },));
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) {
+                      return const ListOrder();
+                    },
+                  ));
                 },
                 child: Container(
                   decoration: BoxDecoration(
@@ -94,12 +98,41 @@ class HomePageAsAdmin extends ConsumerWidget {
                     ),
                   ),
                 ),
+              ),
+              SizedBox(
+                height: 20.h,
+              ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) {
+                      return const ListArtikelPage();
+                    },
+                  ));
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: RefacTheme().mainColor, width: 3),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Center(
+                      child: Text(
+                        'List Article',
+                        style: TextStyle(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               )
             ],
           ),
         ),
       ),
-      
     );
   }
 }

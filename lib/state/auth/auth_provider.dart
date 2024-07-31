@@ -15,8 +15,14 @@ class AuthProvider extends ChangeNotifier {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   String? token;
+  bool isVisible = true;
 
-  bool? isLoading;
+  void changeVisibilityPassword(bool value) {
+    isVisible = value;
+    notifyListeners();
+  }
+
+  bool isLoading = false;
   void loadingState(bool? value) {
     isLoading = value!;
     notifyListeners();
@@ -106,6 +112,17 @@ class AuthProvider extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();
   }
+
+  Future<bool> autoLogin() async {
+    final token = await getToken('token');
+    print('tersimpan = $token');
+    if (token != null) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }
 
-final authProvider = ChangeNotifierProvider((ref) => AuthProvider());
+final authProvider =
+    ChangeNotifierProvider.autoDispose((ref) => AuthProvider());

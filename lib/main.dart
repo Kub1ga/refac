@@ -1,19 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:refac/state/auth/auth_provider.dart';
 import 'package:refac/views/auth/login_page.dart';
+import 'package:refac/views/home/navbar_home.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  AuthProvider authProv = AuthProvider();
+  bool? loginStatus = await authProv.autoLogin();
+  print(loginStatus);
 
-  runApp(ProviderScope(child: MyApp()));
+  runApp(ProviderScope(
+      child: MyApp(
+    shoudlLogin: loginStatus,
+  )));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  bool shoudlLogin;
+  MyApp({super.key, required this.shoudlLogin});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -22,7 +30,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: const RefacApp());
+        home: shoudlLogin ? NavbarHome() : RefacApp());
   }
 }
 

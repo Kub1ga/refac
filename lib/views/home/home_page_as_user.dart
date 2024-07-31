@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:refac/state/auth/auth_provider.dart';
 import 'package:refac/state/home/category/category_provider.dart';
 import 'package:refac/state/home/home_provider.dart';
 import 'package:refac/state/profile/profile_provider.dart';
@@ -26,7 +27,7 @@ class HomePageAsUser extends ConsumerWidget {
               Expanded(
                 child: Container(
                   height: 100.h,
-                  // width: 1.sw,
+                  width: 1.sw,
                   color: Colors.white,
                   child: Padding(
                     padding: const EdgeInsets.all(16),
@@ -124,6 +125,17 @@ class HomePageAsUser extends ConsumerWidget {
                                           },
                                           loading: () {
                                             return 0;
+                                          },
+                                        ),
+                                        phone: getIdUser.when(
+                                          data: (data) {
+                                            return data.phone ?? '';
+                                          },
+                                          error: (error, stackTrace) {
+                                            return '';
+                                          },
+                                          loading: () {
+                                            return '';
                                           },
                                         ),
                                       );
@@ -232,11 +244,43 @@ class HomePageAsUser extends ConsumerWidget {
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Image.network(
-                                      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTeujOaRWnmiTkG15-RkZrieVZ_JKumVf1CPQ&s',
-                                      width: 60.w,
-                                      height: 60.h,
-                                    ),
+                                    data.data[index].categoryName == 'Checkup'
+                                        ? Image.asset(
+                                            fit: BoxFit.cover,
+                                            'assets/icons/check_up.png',
+                                            width: 60.w,
+                                            height: 60.h,
+                                          )
+                                        : data.data[index].categoryName ==
+                                                'Service Kulkas'
+                                            ? Image.asset(
+                                                fit: BoxFit.cover,
+                                                'assets/icons/service_kulkas.png',
+                                                width: 60.w,
+                                                height: 60.h,
+                                              )
+                                            : data.data[index].categoryName ==
+                                                    'Service AC'
+                                                ? Image.asset(
+                                                    fit: BoxFit.cover,
+                                                    'assets/icons/service_ac.png',
+                                                    width: 60.w,
+                                                    height: 60.h,
+                                                  )
+                                                : data.data[index]
+                                                            .categoryName ==
+                                                        'Isi Refrigerant'
+                                                    ? Image.asset(
+                                                        fit: BoxFit.cover,
+                                                        'assets/icons/isi_refrigerant.png',
+                                                        width: 60.w,
+                                                        height: 60.h,
+                                                      )
+                                                    : Image.network(
+                                                        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTeujOaRWnmiTkG15-RkZrieVZ_JKumVf1CPQ&s',
+                                                        width: 60.w,
+                                                        height: 60.h,
+                                                      ),
                                     SizedBox(
                                       height: 30.h,
                                     ),
@@ -244,8 +288,9 @@ class HomePageAsUser extends ConsumerWidget {
                                       data.data[index].categoryName!
                                           .toUpperCase()
                                           .replaceAll('_', ' '),
+                                      textAlign: TextAlign.center,
                                       style: TextStyle(
-                                        fontSize: 16.sp,
+                                        fontSize: 14.sp,
                                         fontWeight: FontWeight.w600,
                                       ),
                                     ),

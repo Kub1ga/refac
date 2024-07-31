@@ -98,8 +98,8 @@ class ProfilePage extends ConsumerWidget {
                                     namaUser: data.name!,
                                     email: data.email!,
                                     dateCreated: data.createdAt!.toIso8601String(),
-                                    address: data.address,
-                                    phone: data.phone,
+                                    address: data.address ?? '',
+                                    phone: data.phone ?? '',
                                   );
                                 },
                               ));
@@ -166,7 +166,7 @@ class ProfilePage extends ConsumerWidget {
                           ),
                         ),
                         Text(
-                          data.address == null
+                          data.address == ''
                               ? '       Belum ada alamat'
                               : '       ${data.address}',
                           style: TextStyle(

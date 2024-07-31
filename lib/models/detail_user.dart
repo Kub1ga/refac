@@ -14,7 +14,7 @@ class DetailUserModel {
     final String? username;
     final String? email;
     final dynamic phone;
-    final dynamic address;
+    final String? address;
     final DateTime? createdAt;
 
     factory DetailUserModel.fromJson(Map<String, dynamic> json){ 
@@ -24,7 +24,7 @@ class DetailUserModel {
             username: json["username"],
             email: json["email"],
             phone: json["phone"],
-            address: json["address"],
+            address: json["address"] ?? "",
             createdAt: DateTime.tryParse(json["created_at"] ?? ""),
         );
     }

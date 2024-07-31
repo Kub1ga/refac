@@ -11,7 +11,7 @@ import '../../models/create_order.dart';
 class OrderProvider extends ChangeNotifier {
   ApiServicesUser apiServicesUser = ApiServicesUser();
   AuthProvider authProvider = AuthProvider();
-  TextEditingController deskripsiController = TextEditingController();
+  TextEditingController deskripsiController = TextEditingController(text: '');
 
   Future<void> createOder(int idService, int idUser) async {
     String? token = await authProvider.getToken('token');
@@ -24,7 +24,8 @@ class OrderProvider extends ChangeNotifier {
       body: jsonEncode({
         'id_category_service': idService,
         'id_users': idUser,
-        'description' : deskripsiController.text
+        'description' : deskripsiController.text,
+        'quantity' : '1'
       }),
     );
     if (response.statusCode == 200 || response.statusCode == 201) {

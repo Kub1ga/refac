@@ -85,11 +85,6 @@ class RegisterPage extends ConsumerWidget {
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(30, 0, 30, 30),
-                child: customTextForm(
-                    'Ulangi Kata Sandi', authProv.passwordController),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(30, 0, 30, 30),
                 child: GestureDetector(
                     onTap: () async {
                       final success = await authProv.registerUser(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -28,13 +29,17 @@ class DetailArticlePage extends ConsumerWidget {
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              textAlign: TextAlign.center,
-              title!,
-              style: TextStyle(
-                fontSize: 24.sp,
-                fontWeight: FontWeight.w600,
+            Align(
+              alignment: Alignment.center,
+              child: Text(
+                textAlign: TextAlign.center,
+                title!,
+                style: TextStyle(
+                  fontSize: 24.sp,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
             SizedBox(
@@ -46,7 +51,7 @@ class DetailArticlePage extends ConsumerWidget {
               decoration: BoxDecoration(
                 image: DecorationImage(
                   fit: BoxFit.contain,
-                  image: AssetImage(image!),
+                  image: NetworkImage(image!),
                 ),
               ),
             ),

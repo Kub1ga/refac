@@ -100,6 +100,17 @@ class CategoryServicePage extends ConsumerWidget {
                                       return 0;
                                     },
                                   ),
+                                  phone: getIdUser.when(
+                                    data: (data) {
+                                      return data.phone!;
+                                    },
+                                    error: (error, stackTrace) {
+                                      return '';
+                                    },
+                                    loading: () {
+                                      return '';
+                                    },
+                                  ),
                                 );
                               },
                             ));

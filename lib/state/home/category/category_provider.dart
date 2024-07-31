@@ -10,6 +10,8 @@ import '../../../models/list_service.dart';
 
 class CategoryProvider extends ChangeNotifier {
   ApiServicesUser apiServicesUser = ApiServicesUser();
+  TextEditingController servNameController = TextEditingController();
+  TextEditingController priceController = TextEditingController();
 
   Future<CategoryDetailModel> getCategoryDetail(int idCategory) async {
     final response = await http.get(
@@ -51,6 +53,23 @@ class CategoryProvider extends ChangeNotifier {
     if (response.statusCode == 200 || response.statusCode == 201) {
       return ListServiceModel.fromJson(jsonDecode(response.body));
     } else {
+      throw Exception(jsonDecode(response.body)['message']);
+    }
+  }
+
+  Future<void> addCategoryService(
+      String idCat, String nameServ, String price) async {
+    final response = await http.post(
+        Uri.parse(apiServicesUser.baseUrl + apiServicesUser.createService),
+        headers: {
+          'Content-type': 'application/json',
+        },
+        body: jsonEncode(
+            {'id_category': idCat, 'name_service': nameServ, 'price': price}));
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      print(response.body);
+    } else {
+      print(response.body);
       throw Exception(jsonDecode(response.body)['message']);
     }
   }

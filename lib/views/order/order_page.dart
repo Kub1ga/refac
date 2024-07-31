@@ -11,13 +11,21 @@ import 'package:refac/views/component/custom_button.dart';
 class OrderPage extends ConsumerWidget {
   int idCategoryService;
   int idUser;
-  OrderPage({super.key, required this.idCategoryService, required this.idUser});
+  String phone;
+
+  OrderPage(
+      {super.key,
+      required this.idCategoryService,
+      required this.idUser,
+      required this.phone});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final getServiceDetail = ref.watch(getDetailServiceAsync(idCategoryService));
+    final getServiceDetail =
+        ref.watch(getDetailServiceAsync(idCategoryService));
     print('id_category_service : $idCategoryService');
     print('id_user : $idUser');
+    print('phone : $phone');
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -52,25 +60,35 @@ class OrderPage extends ConsumerWidget {
                 SizedBox(
                   height: 18.h,
                 ),
-                Text(
-                  'Harga',
-                  style: TextStyle(fontSize: 16.sp),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Harga',
+                      style: TextStyle(fontSize: 16.sp),
+                    ),
+                  ],
                 ),
                 SizedBox(
                   height: 7.h,
                 ),
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(24.r),
-                    border: Border.all(
-                      width: 3,
-                      color: RefacTheme().mainColor,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(24.r),
+                        border: Border.all(
+                          width: 3,
+                          color: RefacTheme().mainColor,
+                        ),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text('Rp. ${data.data[0].price!.toString()}'),
+                      ),
                     ),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text('Rp. ${data.data[0].price!.toString()}'),
-                  ),
+                  ],
                 ),
                 SizedBox(
                   height: 18.h,
@@ -108,16 +126,25 @@ class OrderPage extends ConsumerWidget {
                     print('id cat = $idCategoryService, id use = $idUser');
                     print(await ref.watch(authProvider).getToken('token'));
                     ref.watch(authProvider).loadingState(true);
+
                     try {
-                      await ref
-                          .watch(orderProvider)
-                          .createOder(idCategoryService, idUser);
-                      ref.watch(authProvider).loadingState(false);
-                      ScaffoldMessenger.of(context).showSnackBar(ref
-                          .watch(authProvider)
-                          .snackBarMessage(
-                              'Berhasil, harap tunggu teknisi datang'));
-                      Navigator.pop(context);
+                      if (phone != '') {
+                        await ref
+                            .watch(orderProvider)
+                            .createOder(idCategoryService, idUser);
+                        ref.watch(authProvider).loadingState(false);
+                        ScaffoldMessenger.of(context).showSnackBar(ref
+                            .watch(authProvider)
+                            .snackBarMessage(
+                                'Berhasil, harap tunggu teknisi datang'));
+                        Navigator.pop(context);
+                      } else {
+                        ref.watch(authProvider).loadingState(false);
+                        ScaffoldMessenger.of(context).showSnackBar(ref
+                            .watch(authProvider)
+                            .snackBarMessage(
+                                'Nomor telepon tidak boleh kosong'));
+                      }
                     } catch (e) {
                       ref.watch(authProvider).loadingState(false);
                       ScaffoldMessenger.of(context).showSnackBar(ref
@@ -127,7 +154,7 @@ class OrderPage extends ConsumerWidget {
                   },
                   child: customButton(
                       RefacTheme().mainColor,
-                      ref.watch(authProvider).isLoading!
+                      ref.watch(authProvider).isLoading
                           ? const CircularProgressIndicator()
                           : Text(
                               'Order',
